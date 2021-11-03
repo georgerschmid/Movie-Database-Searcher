@@ -1,3 +1,5 @@
+from os import link
+from typing import Type
 from whoosh.index import create_in
 from whoosh.fields import *
 import os.path
@@ -5,12 +7,13 @@ import json
 
 
 schema = Schema(
-    title=TEXT(stored=True),
-    picture=TEXT(stored=True),
-    type=KEYWORD(stored=True),
-    episodes=NUMERIC(stored=True),
-    status=KEYWORD(stored=True),
-    tags=KEYWORD(stored=True)
+    Title=TEXT(stored=True),
+    Type=TEXT(stored=True),
+    Date=TEXT(stored=True),
+    Plot=TEXT(stored=True),
+    Genre=KEYWORD(stored=True),
+    Image=TEXT(stored=True),
+    Link=TEXT(stored=True)
 )
 
 if not os.path.exists("index"):
@@ -18,16 +21,17 @@ if not os.path.exists("index"):
 ix = create_in("index", schema)
 
 writer = ix.writer()
-f = open("anime-offline-database.json")
+f = open("finalMasterdb.json")
 db = json.load(f)
 
-for anime in db["data"]:
+for shows in db:
     writer.add_document(
-        title=anime["title"],
-        picture=anime["picture"],
-        type=anime["type"],
-        episodes=anime["episodes"],
-        status=anime["status"],
-        tags=anime["tags"]
+        Title=shows["Title"],
+        Type=shows["Type"],
+        Date=shows["Date"],
+        Plot=shows["Plot"],
+        Genre=shows["Genre"],
+        Image=shows["Image"],
+        Link=shows["Link"]
     )
 writer.commit()

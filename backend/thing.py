@@ -1,4 +1,5 @@
-import json 
+import json
+from os import link 
 from fastapi import FastAPI, Request, Response
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse, HTMLResponse
@@ -6,8 +7,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Type
 from enum import Enum
+from starlette.responses import PlainTextResponse
 
 from whoosh.index import open_dir
 from whoosh.qparser import QueryParser
@@ -20,27 +22,19 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-class AnimeStatus(str, Enum):
-    TV = "TV"
-    MOVIE = "MOVIE"
-    OVA = "OVA"
-    ONA = "ONA"
-    SPECIAL = "SPECIAL"
-    UNKNOWN = "UNKNOWN"
-
-class AnimeType(str, Enum):
-    FINISHED = "FINISHED"
-    ONGOING = "ONGOING"
-    UPCOMING = "UPCOMING"
-    UNKNOWN = "UNKNOWN"
+class ShowType(str, Enum):
+    MOVIE = "TV Series"
+    TVSHOW = "Movie"
+   
 
 class Item(BaseModel):
-    title:str
-    picture:str
-    animetype:str
-    episodes:int
-    status:str
-    tags:List[str]
+    Title:str
+    Type:str
+    Date:str
+    Plot:str
+    Genre:str
+    Image:str
+    Link:str
 
 class SearchResults(BaseModel):
     results: List[Item]
@@ -48,12 +42,13 @@ class SearchResults(BaseModel):
 
 def results2json(results):
     return SearchResults(results=[Item(
-            title=results[x]["title"],
-            picture=results[x]["picture"],
-            animetype=results[x]["type"],
-            episodes=results[x]["episodes"],
-            status=results[x]["status"],
-            tags=results[x]["tags"],
+            Title=results[x]["Title"],
+            Type=results[x]["Type"],
+            Date=results[x]["Date"],
+            Plot=results[x]["Plot"],
+            Genre=results[x]["Genre"],
+            Image=results[x]["Image"],
+            Link=results[x]["Link"],
         ) for x in range(len(results))])
 
 
@@ -65,8 +60,10 @@ def read_root():
 def read_root(field:str, search: str):
     q =  QueryParser(field, ix.schema).parse(search)
     with ix.searcher() as s:
-        results = s.search(q, limit=None)
+        results = s.search(q, limit=10)
+        #return results[0]["Image"]
         data = results2json(results)
+      
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)
     
