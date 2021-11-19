@@ -14,6 +14,7 @@ from starlette.responses import PlainTextResponse
 from whoosh.index import open_dir
 from whoosh.qparser import QueryParser
 from whoosh.query import *
+from whoosh import scoring
 
 ix = open_dir("index")
 
@@ -52,19 +53,24 @@ def results2json(results):
         ) for x in range(len(results))])
 
 
-@app.get("/")
+@app.post("/")
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/search/{field}/{search}")
+@app.post("/search/{field}/{search}")
 def read_root(field:str, search: str):
     q =  QueryParser(field, ix.schema).parse(search)
-    with ix.searcher() as s:
+    with ix.searcher(weighting=scoring.TF_IDF()) as s:
         results = s.search(q, limit=10)
-        #return results[0]["Image"]
         data = results2json(results)
-      
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)
     
-
+@app.post("/search/{search}")
+def read_root1(search: str):
+    q =  QueryParser("Tilte", ix.schema).parse(search)
+    with ix.searcher() as s:
+        results = s.search(q, limit=10)
+        data = results2json(results)
+        json_compatible_item_data = jsonable_encoder(data)
+        return JSONResponse(content=json_compatible_item_data)
