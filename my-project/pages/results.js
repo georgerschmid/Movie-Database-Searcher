@@ -186,7 +186,7 @@ function results(props) {
                     <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-3 xl:gap-x-8">
                     {props.data.results.map(({Title, Image, Date, Plot}) => (
                         <a key={Title} href={Title} className="group">
-                        <div className="w-full aspect-w-1 aspect-h-1 rounded-lg overflow-hidden sm:aspect-w-2 sm:aspect-h-3">
+                        <div className="w-full aspect-w-1 aspect-h-2 rounded-lg overflow-hidden sm:aspect-w-2 sm:aspect-h-3">
                             <img
                             src={Image}
                             className="w-full h-full object-center object-cover group-hover:opacity-75"
