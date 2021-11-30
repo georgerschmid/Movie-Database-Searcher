@@ -57,20 +57,20 @@ def results2json(results):
 def read_root():
     return {"Hello": "World"}
 
-@app.post("/search/{field}/{search}")
+@app.get("/search/{field}/{search}")
 def read_root(field:str, search: str):
     q =  QueryParser(field, ix.schema).parse(search)
     with ix.searcher(weighting=scoring.TF_IDF()) as s:
-        results = s.search(q, limit=10)
+        results = s.search(q)
         data = results2json(results)
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)
     
-@app.post("/search/{search}")
+@app.get("/search/{search}")
 def read_root1(search: str):
-    q =  QueryParser("Tilte", ix.schema).parse(search)
+    q =  QueryParser("Title", ix.schema).parse(search)
     with ix.searcher() as s:
-        results = s.search(q, limit=10)
+        results = s.search(q)
         data = results2json(results)
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)
