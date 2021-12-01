@@ -1,20 +1,4 @@
-/*
-  This example requires Tailwind CSS v2.0+ 
-  
-  This example requires some changes to your config:
-  
-  ```
-  // tailwind.config.js
-  module.exports = {
-    // ...
-    plugins: [
-      // ...
-      require('@tailwindcss/forms'),
-    ],
-  }
-  ```
-*/
-import  Search  from '../components/Search'
+import  Search  from './Search'
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
@@ -30,16 +14,18 @@ import {
 } from '@heroicons/react/outline'
 
 
+
 const navigation = [
-  { name: 'Search', href: '#', icon: HomeIcon, current: true },
-  { name: 'about', href: '#', icon: UsersIcon, current: false },
+  { name: 'Search', href: '/', icon: HomeIcon, current: true },
+  { name: 'Adv Search', href: '/search', icon: HomeIcon, current: true },
+  { name: 'About', href: '#', icon: UsersIcon, current: false },
 ]
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function Example() {
+export default function Layout({children}) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
@@ -190,18 +176,9 @@ export default function Example() {
         </div>
 
         <main className="flex-1 relative overflow-y-auto focus:outline-none">
-          <div className="py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              <h1 className="text-2xl font-semibold text-gray-900">Results</h1>
-            </div>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-              {/* Replace with your content */}
-              <div className="py-4">
-                <div className="border-4 border-dashed border-gray-200 rounded-lg h-96" />
-              </div>
-              {/* /End replace */}
-            </div>
-          </div>
+
+          {children}
+
         </main>
       </div>
     </div>
