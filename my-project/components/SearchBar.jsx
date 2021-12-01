@@ -1,6 +1,6 @@
 import { SearchIcon } from '@heroicons/react/solid'
 
-const Search = () => {
+const SearchBar = () => {
   return (
     <form className="w-full flex md:ml-0" action="results" method="GET">
       <label htmlFor="search-field" className="sr-only">
@@ -22,4 +22,4 @@ const Search = () => {
   );
 }
 
-export default Search;
+export default SearchBar;

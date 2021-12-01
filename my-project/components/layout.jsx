@@ -1,4 +1,4 @@
-import  Search  from './Search'
+import  SearchBar  from './SearchBar'
 import { Fragment, useState } from 'react'
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import {
@@ -11,13 +11,14 @@ import {
   MenuAlt2Icon,
   UsersIcon,
   XIcon,
+  SearchIcon,
 } from '@heroicons/react/outline'
 
 
 
 const navigation = [
-  { name: 'Search', href: '/', icon: HomeIcon, current: true },
-  { name: 'Adv Search', href: '/search', icon: HomeIcon, current: true },
+  { name: 'Home', href: '/', icon: HomeIcon, current: true },
+  { name: 'Adv Search', href: '/search', icon: SearchIcon, current: true },
   { name: 'About', href: '#', icon: UsersIcon, current: false },
 ]
 
@@ -161,7 +162,7 @@ export default function Layout({children}) {
           </button>
           <div className="flex-1 px-4 flex justify-between">
             <div className="flex-1 flex">
-              <Search/>
+              <SearchBar/>
             </div>
             <div className="ml-4 flex items-center md:ml-6">
               <button
