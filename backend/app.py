@@ -74,3 +74,12 @@ def read_root1(search: str):
         data = results2json(results)
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)
+
+@app.get("/search/single/{search}")
+def read_root2(search: str):
+    q =  QueryParser("Title", ix.schema).parse(search)
+    with ix.searcher() as s:
+        results = s.search(q, limit=1)
+        data = results2json(results)
+        json_compatible_item_data = jsonable_encoder(data)
+        return JSONResponse(content=json_compatible_item_data)
