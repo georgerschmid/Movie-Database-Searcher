@@ -14,7 +14,8 @@ from starlette.responses import PlainTextResponse
 from whoosh.index import open_dir
 from whoosh.qparser import QueryParser
 from whoosh.query import *
-from whoosh import scoring
+from whoosh import scoring, query
+
 
 ix = open_dir("index")
 
@@ -41,7 +42,7 @@ class SearchResults(BaseModel):
     results: List[Item]
 
 
-def results2json(results):
+def results2json(results, limit):
     return SearchResults(results=[Item(
             Title=results[x]["Title"],
             Type=results[x]["Type"],
@@ -50,36 +51,40 @@ def results2json(results):
             Genre=results[x]["Genre"],
             Image=results[x]["Image"],
             Link=results[x]["Link"],
-        ) for x in range(len(results))])
+        ) for x in range(limit-1)])
 
 
 @app.post("/")
 def read_root():
     return {"Hello": "World"}
 
-@app.get("/search/{field}/{search}")
-def read_root(field:str, search: str):
-    q =  QueryParser(field, ix.schema).parse(search)
-    with ix.searcher(weighting=scoring.TF_IDF()) as s:
-        results = s.search(q)
-        data = results2json(results)
-        json_compatible_item_data = jsonable_encoder(data)
-        return JSONResponse(content=json_compatible_item_data)
     
 @app.get("/search/{search}")
 def read_root1(search: str):
     q =  QueryParser("Title", ix.schema).parse(search)
     with ix.searcher() as s:
-        results = s.search(q)
-        data = results2json(results)
+        max = 10
+        results = s.search(q, limit = max)
+        if(len(results) < max):
+            max = len(results)
+        data = results2json(results, max)
+        
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)
 
-@app.get("/search/single/{search}")
-def read_root2(search: str):
-    q =  QueryParser("Title", ix.schema).parse(search)
+
+@app.get("/advsearch/{genre}")
+def read_root3(genre: str):
+    q =  QueryParser("Genre", ix.schema).parse(genre)
     with ix.searcher() as s:
-        results = s.search(q, limit=1)
-        data = results2json(results)
+        max = 10
+        allow_q = query.Term("Type", "Movie")
+        results = s.search(q, filter=allow_q, limit=max)
+        print(results.filtered_count)
+        if(len(results) < max):
+            max = len(results)
+        
+        data = results2json(results, max)
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)
+       
