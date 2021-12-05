@@ -46,7 +46,7 @@ export default function Title(props) {
     <Layout>
       <div className="py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
-          <h1 className="text-2xl font-semibold text-gray-900">Title</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">{props.data.results[0].Title}</h1>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div>
@@ -136,53 +136,27 @@ export default function Title(props) {
                 <h2 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
                   Pinned Projects
                 </h2>
-                <ul
-                  role="list"
-                  className="mt-3 grid grid-cols-1 gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4"
-                >
-                  {projects.map((project) => (
-                    <li
-                      key={project.name}
-                      className="col-span-1 flex shadow-sm rounded-md"
-                    >
-                      <div
-                        className={classNames(
-                          project.bgColor,
-                          "flex-shrink-0 flex items-center justify-center w-16 text-white text-sm font-medium rounded-l-md"
-                        )}
-                      >
-                        {project.initials}
-                      </div>
-                      <div className="flex-1 flex items-center justify-between border-t border-r border-b border-gray-200 bg-white rounded-r-md truncate">
-                        <div className="flex-1 px-4 py-2 text-sm truncate">
-                          <a
-                            href={project.href}
-                            className="text-gray-900 font-medium hover:text-gray-600"
-                          >
-                            {project.name}
-                          </a>
-                          <p className="text-gray-500">
-                            {project.members} Members
-                          </p>
+
+                <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-5 xl:gap-x-8">
+                  {props.data1.results.map(({ Title, Image, Date }) => (
+                    <Link key={Title} href={Title} className="group">
+                      <a>
+                        <div className="w-full aspect-w-1 aspect-h-2 rounded-lg overflow-hidden sm:aspect-w-2 sm:aspect-h-3">
+                          <img
+                            src={Image}
+                            className="w-full h-full object-center object-cover group-hover:opacity-75"
+                          />
                         </div>
-                        <div className="flex-shrink-0 pr-2">
-                          <button
-                            type="button"
-                            className="w-8 h-8 bg-white inline-flex items-center justify-center text-gray-400 rounded-full bg-transparent hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                          >
-                            <span className="sr-only">Open options</span>
-                            <DotsVerticalIcon
-                              className="w-5 h-5"
-                              aria-hidden="true"
-                            />
-                          </button>
+
+                        <div className="mt-4 flex items-center justify-between text-base font-medium text-gray-900">
+                          <h3>{Title}</h3>
+                          <p>Release: {Date}</p>
                         </div>
-                      </div>
-                    </li>
+                      </a>
+                    </Link>
                   ))}
-                </ul>
+                </div>
               </div>
-              <br />
             </div>
           </div>
         </div>
@@ -195,7 +169,9 @@ export async function getServerSideProps(context) {
   const { query } = context;
   const res = await fetch(`http://localhost:8000/search/${query.title}`);
   const data = await res.json();
-  const res1 = await fetch(`http://localhost:8000/search/${query.title}`);
+  const res1 = await fetch(
+    `http://localhost:8000/relatedsearch/${query.title}`
+  );
   const data1 = await res1.json();
   return {
     props: {

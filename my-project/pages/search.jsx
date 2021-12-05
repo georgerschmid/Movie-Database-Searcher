@@ -1,39 +1,39 @@
 import Layout from "../components/layout";
+import Link from 'next/link'
 const genere = [
-  { id: 1, name: "Crime" },
-  { id: 2, name: "Drama" },
-  { id: 3, name: "Mystery" },
-  { id: 4, name: "Thriller" },
-  { id: 5, name: "Romance" },
-  { id: 6, name: "Action" },
-  { id: 7, name: "Comedy" },
-  { id: 8, name: "Short" },
-  { id: 9, name: "Documentary" },
-  { id: 10, name: "Adventure" },
-  { id: 11, name: "Reality-TV" },
-  { id: 12, name: "family" },
-  { id: 13, name: "Horror" },
-  { id: 14, name: "Sci-fi" },
-  { id: 15, name: "Animation" },
-  { id: 16, name: "Fantasy" },
-  { id: 17, name: "History" },
-  { id: 18, name: "Biography" },
-  { id: 19, name: "News" },
-  { id: 20, name: "Music" },
-  { id: 21, name: "Talk-Show" },
-  { id: 22, name: "War" },
-  { id: 23, name: "Western" },
-  { id: 24, name: "Game-Show" },
-  { id: 25, name: "sport" },
-  { id: 26, name: "film-noir" },
-  { id: 27, name: "adult" },
-  { id: 28, name: "Musical" },
+  { id: "Crime", name: "Crime" },
+  { id: "Drama", name: "Drama" },
+  { id: "Mystery", name: "Mystery" },
+  { id: "Thriller", name: "Thriller" },
+  { id: "Romance", name: "Romance" },
+  { id: "Action", name: "Action" },
+  { id: "Comedy", name: "Comedy" },
+  { id: "Short", name: "Short" },
+  { id: "Documentary", name: "Documentary" },
+  { id: "Adventure", name: "Adventure" },
+  { id: "RealityTV", name: "Reality-TV" },
+  { id: "Family", name: "Family" },
+  { id: "Horror", name: "Horror" },
+  { id: "Scifi", name: "Sci-fi" },
+  { id: "Animation", name: "Animation" },
+  { id: "Fantasy", name: "Fantasy" },
+  { id: "History", name: "History" },
+  { id: "Biography", name: "Biography" },
+  { id: "News", name: "News" },
+  { id: "Music", name: "Music" },
+  { id: "TalkShow", name: "Talk-Show" },
+  { id: "War", name: "War" },
+  { id: "Western", name: "Western" },
+  { id: "GameShow", name: "Game-Show" },
+  { id: "Sport", name: "sport" },
+  { id: "FilmNoir", name: "Film-Noir" },
+  { id: "Adult", name: "Adult" },
+  { id: "Musical", name: "Musical" },
 ];
 
 const type = [
   { id: "tv", title: "TV" },
   { id: "movie", title: "Movie" },
-  { id: "both", title: "Both" },
 ];
 
 export default function Search() {
@@ -49,14 +49,12 @@ export default function Search() {
           <form className="space-y-8 divide-y divide-gray-200">
             <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
               <div>
-
-
                 <div className="mt-6 sm:mt-5 space-y-6 sm:space-y-5">
                   <fieldset>
                     <legend className="text-lg font-medium text-gray-900">
                       Generes
                     </legend>
-                    <div className="mt-4 border-t border-b border-gray-200 divide-y divide-gray-200">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                       {genere.map((genere, genereIdx) => (
                         <div
                           key={genereIdx}
@@ -64,7 +62,7 @@ export default function Search() {
                         >
                           <div className="min-w-0 flex-1 text-sm">
                             <label
-                              htmlFor={`genere-${genere.id}`}
+                              htmlFor={`${genere.id}`}
                               className="font-medium text-gray-700 select-none"
                             >
                               {genere.name}
@@ -72,8 +70,8 @@ export default function Search() {
                           </div>
                           <div className="ml-3 flex items-center h-5">
                             <input
-                              id={`genere-${genere.id}`}
-                              name={`genere-${genere.id}`}
+                              id={`${genere.id}`}
+                              name={`${genere.id}`}
                               type="checkbox"
                               className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
                             />
@@ -98,9 +96,9 @@ export default function Search() {
                       {type.map((type) => (
                         <div key={type.id} className="flex items-center">
                           <input
-                            id={type.id}
-                            name="type-method"
-                            type="radio"
+                            id={`${type.id}`}
+                            name={`${type.id}`}
+                            type="checkbox"
                             defaultChecked={type.id === "both"}
                             className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
                           />
@@ -122,13 +120,21 @@ export default function Search() {
                     >
                       Year
                     </label>
-                    <div className="mt-1">
+                    <div>
                       <input
-                        type="year"
-                        name="year"
-                        id="year"
+                        type="year1"
+                        name="year1"
+                        id="year1"
                         className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
                         placeholder="2015"
+                      />
+                      <p>to</p>
+                      <input
+                        type="year2"
+                        name="year2"
+                        id="year2"
+                        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                        placeholder="2020"
                       />
                     </div>
                   </div>
@@ -136,12 +142,14 @@ export default function Search() {
               </div>
               <div className="pt-5">
                 <div className="flex justify-end">
+                <form className="w-full flex md:ml-0" action="advresults" method="POST">
                   <button
                     type="submit"
                     className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
                     Search
                   </button>
+                  </form>
                 </div>
               </div>
             </div>
@@ -150,4 +158,20 @@ export default function Search() {
       </div>
     </Layout>
   );
+}
+
+export async function getServerSideProps(context) {
+  const { query } = context;
+
+  const res = await fetch(`http://localhost:8000/advsearch/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(query),
+  });
+  const data = await res.json();
+  return {
+    props: {
+      data,
+    },
+  };
 }

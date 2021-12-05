@@ -117,7 +117,12 @@ export default results;
 
 export async function getServerSideProps(context) {
   const { query } = context;
-  const res = await fetch(`http://localhost:8000/search/${query.search}`);
+
+  const res = await fetch(`http://localhost:8000/advsearch/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(query),
+  });
   const data = await res.json();
   return {
     props: {
