@@ -7,6 +7,8 @@ from fastapi.responses import JSONResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+from fastapi.middleware.cors import CORSMiddleware
+
 from pydantic import BaseModel
 from typing import Optional, List, Type
 from enum import Enum
@@ -25,6 +27,19 @@ ix = open_dir("index")
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+
+origins = [
+    "http://localhost:3000",
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class ShowType(str, Enum):
     MOVIE = "TV Series"
@@ -88,6 +103,16 @@ def results2json(results, limit):
             Link=results[x]["Link"],
         ) for x in range(limit)])
 
+def results2json(results, limit):
+    return SearchResults(results=[Item(
+            Title=results[x]["Title"],
+            Type=results[x]["Type"],
+            Date=results[x]["Date"],
+            Plot=results[x]["Plot"],
+            Genre=results[x]["Genre"],
+            Image=results[x]["Image"],
+            Link=results[x]["Link"],
+        ) for x in range(limit)])
 
 @app.post("/")
 def read_root():
@@ -98,10 +123,12 @@ def read_root():
 def read_root1(search: str):
     q =  QueryParser("Title", ix.schema).parse(search)
     with ix.searcher() as s:
-        max = 10
+        max = 100
         results = s.search(q, limit = max)
         if(len(results) < max):
             max = len(results)
+        else:
+            max = 50
         data = results2json(results, max)
         
         json_compatible_item_data = jsonable_encoder(data)
@@ -136,71 +163,72 @@ def read_root2(search: str):
 
 @app.post("/advsearch/")
 def read_root3(item: adv):
+    print(item)
     catGenre = ""
     catType = ""
     catDate = ""
-    if(item.Crime == "on"):
+    if(item.Crime == "True"):
         catGenre = catGenre + " " + "Crime"
-    if(item.Drama == "on"):
+    if(item.Drama == "True"):
         catGenre = catGenre + " " + "Drama"
-    if(item.Mystery == "on"):
+    if(item.Mystery == "True"):
         catGenre = catGenre + " " + "Mystery"
-    if(item.Thriller == "on"):
+    if(item.Thriller == "True"):
         catGenre = catGenre + " " + "Thriller"
-    if(item.Romance == "on"):
+    if(item.Romance == "True"):
         catGenre = catGenre + " " + "Romance"
-    if(item.Action == "on"):
+    if(item.Action == "True"):
         catGenre = catGenre + " " + "Action"
-    if(item.Comedy == "on"):
+    if(item.Comedy == "True"):
         catGenre = catGenre + " " + "Comedy"
-    if(item.Short == "on"):
+    if(item.Short == "True"):
         catGenre = catGenre + " " + "Short"
-    if(item.Documentary == "on"):
+    if(item.Documentary == "True"):
         catGenre = catGenre + " " + "Documentary"
-    if(item.Adventure == "on"):
+    if(item.Adventure == "True"):
         catGenre = catGenre + " " + "Adventure"
-    if(item.RealityTV == "on"):
+    if(item.RealityTV == "True"):
         catGenre = catGenre + " " + "RealityTV"
-    if(item.Family == "on"):
+    if(item.Family == "True"):
         catGenre = catGenre + " " + "Family"
-    if(item.Horror == "on"):
+    if(item.Horror == "True"):
         catGenre = catGenre + " " + "Horror"
-    if(item.Scifi == "on"):
+    if(item.Scifi == "True"):
         catGenre = catGenre + " " + "Scifi"
-    if(item.Animation == "on"):
+    if(item.Animation == "True"):
         catGenre = catGenre + " " + "Animation"
-    if(item.Fantasy == "on"):
+    if(item.Fantasy == "True"):
         catGenre = catGenre + " " + "Fantasy"
-    if(item.History == "on"):
+    if(item.History == "True"):
         catGenre = catGenre + " " + "History"
-    if(item.Biography == "on"):
+    if(item.Biography == "True"):
         catGenre = catGenre + " " + "Biography"
-    if(item.News == "on"):
+    if(item.News == "True"):
         catGenre = catGenre + " " + "News"
-    if(item.Music == "on"):
+    if(item.Music == "True"):
         catGenre = catGenre + " " + "Music"
-    if(item.TalkShow == "on"):
+    if(item.TalkShow == "True"):
         catGenre = catGenre + " " + "TalkShow"
-    if(item.War == "on"):
+    if(item.War == "True"):
         catGenre = catGenre + " " + "War"
-    if(item.Western == "on"):
+    if(item.Western == "True"):
         catGenre = catGenre + " " + "Western"
-    if(item.GameShow == "on"):
+    if(item.GameShow == "True"):
         catGenre = catGenre + " " + "GameShow"
-    if(item.Sport == "on"):
+    if(item.Sport == "True"):
         catGenre = catGenre + " " + "Sport"
-    if(item.FilmNoir == "on"):
+    if(item.FilmNoir == "True"):
         catGenre = catGenre + " " + "FilmNoir"
-    if(item.Adult == "on"):
+    if(item.Adult == "True"):
         catGenre = catGenre + " " + "Adult"
-    if(item.Musical == "on"):
+    if(item.Musical == "True"):
         catGenre = catGenre + " " + "Musical"
     
-    if(item.tv == "on" and item.movie == "on"):
+    if(item.tv == "True" and item.movie == "True"):
         catType = "TV Series Movie"
-    elif(item.tv == "on"):
+    elif(item.tv == "True"):
         catType = "TV Series"
-    elif(item.movie == "on"):
+    elif(item.movie == "True"):
         catType = "Movie"
     else:
         catType = "TV Series Movie"
@@ -229,7 +257,7 @@ def read_root3(item: adv):
         if(len(gresults) < max):
             max = len(gresults)
         else:
-            max = 100
+            max = 50
         data = results2json(gresults, max)
         json_compatible_item_data = jsonable_encoder(data)
         return JSONResponse(content=json_compatible_item_data)

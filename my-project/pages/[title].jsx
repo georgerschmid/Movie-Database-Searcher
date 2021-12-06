@@ -138,7 +138,7 @@ export default function Title(props) {
                 </h2>
 
                 <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-5 xl:gap-x-8">
-                  {props.data1.results.map(({ Title, Image, Date }) => (
+                  {props.data1.results.slice(0,10).map(({ Title, Image, Date }) => (
                     <Link key={Title} href={Title} className="group">
                       <a>
                         <div className="w-full aspect-w-1 aspect-h-2 rounded-lg overflow-hidden sm:aspect-w-2 sm:aspect-h-3">
