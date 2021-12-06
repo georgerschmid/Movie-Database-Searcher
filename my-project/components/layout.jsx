@@ -1,6 +1,7 @@
 import SearchBar from "./SearchBar";
 import { Fragment, useState } from "react";
 import { Dialog, Menu, Transition } from "@headlessui/react";
+import logo from "./logo.svg";
 import {
   BellIcon,
   CalendarIcon,
@@ -80,8 +81,8 @@ export default function Layout({ children }) {
               <div className="flex-shrink-0 flex items-center px-4">
                 <img
                   className="h-8 w-auto"
-                  src="https://tailwindui.com/img/logos/workflow-logo-indigo-500-mark-white-text.svg"
-                  alt="Workflow"
+                  src={logo}
+                  alt="BingeHub"
                 />
               </div>
               <div className="mt-5 flex-1 h-0 overflow-y-auto">
