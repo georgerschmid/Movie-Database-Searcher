@@ -1,8 +1,18 @@
 # cs454FinalProject
 
-to run the search server
+backend
+go into backend and use the command below
+to run the search server also install dependecnies as needed
+
 uvicorn app:app --reload 
 
-frontend
+frontend aka my-prject
+go into my-project folder then
+start by
 
-yarn install
+npm install
+
+then to run
+
+npm run dev
+
