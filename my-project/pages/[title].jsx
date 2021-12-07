@@ -115,12 +115,13 @@ export default function Title(props) {
                     </div>
 
                     {/* Policies */}
+                      
                     <section
                       aria-labelledby="policies-heading"
                       className="mt-10"
                     >
-                      <h2 id="policies-heading" className="sr-only">
-                        Imbd Link
+                      <h2 className="text-sm font-medium text-gray-900">
+                        IMBD Link:
                       </h2>
                       <Link href={props.data.results[0].Link}>
                         <p>{props.data.results[0].Link}</p>
@@ -131,12 +132,8 @@ export default function Title(props) {
               </div>
             </div>
             <div>
-              <h1>Related {props.data.results[0].Type}</h1>
+              <h1>Related {props.data.results[0].Type}'s</h1>
               <div>
-                <h2 className="text-gray-500 text-xs font-medium uppercase tracking-wide">
-                  Pinned Projects
-                </h2>
-
                 <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-5 xl:gap-x-8">
                   {props.data1.results.slice(0,10).map(({ Title, Image, Date }) => (
                     <Link key={Title} href={Title} className="group">
